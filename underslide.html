@@ -47,7 +47,7 @@
 </div>
 
 <script>
-// 👇 เปลี่ยนเป็นลิงก์ /exec ล่าสุดที่เพิ่งสร้างใหม่
+// 👇 วางลิงก์ /exec ที่เพิ่งสร้างใหม่ตรงนี้
 const URL = "https://script.google.com/macros/s/AKfycbzjdn3o5I18sY8Y5EGE9bCGChzq412ySLlYQoMziuBMhrNRGwwvVYj3IhkG9HiQlDiICw/exec";
 
 document.getElementById("btnSend").addEventListener("click", async () => {
@@ -65,31 +65,24 @@ document.getElementById("btnSend").addEventListener("click", async () => {
         const fd = new FormData(); fd.append("name", name);
         const res = await fetch(URL, {method:"POST", body:fd, redirect:"follow"});
         const txt = await res.text();
-        console.log("ข้อมูลที่ได้:", txt); // เช็คค่าจริง
+        console.log("RAW:", txt); // เช็คค่าจริงในคอนโซล
 
         let data;
         try { data = JSON.parse(txt); } 
-        catch { throw new Error("ไม่ใช่ข้อมูล JSON / ยังใช้โค้ดเก่า"); }
+        catch { throw new Error("ระบบไม่ส่งข้อมูล JSON (ยังใช้โค้ดเก่า)"); }
 
-        // ✅ รองรับทั้งรูปแบบใหม่และเก่า
-        let isSuccess = false;
-        let orderNum = null;
+        // ✅ รองรับทั้งรูปแบบใหม่และเก่า เพื่อความชัวร์
+        let ok = false, num = null;
+        if (data.success===true && typeof data.order==="number") { ok=true; num=data.order; }
+        else if (data.status==="ok" && typeof data.order==="number") { ok=true; num=data.order; }
 
-        if (data.success === true && typeof data.order === "number") {
-            isSuccess = true;
-            orderNum = data.order;
-        } else if (data.status === "ok" && typeof data.order === "number") {
-            isSuccess = true;
-            orderNum = data.order;
-        }
-
-        if (isSuccess) {
-            msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${orderNum}`;
+        if (ok) {
+            msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${num}`;
             msg.style.color = "#166534";
-            nameInput.value = ""; // ✅ ล้างชื่อแน่นอน
+            nameInput.value = ""; // ล้างชื่อแน่นอน
             setTimeout(()=>msg.textContent="",4000);
         } else {
-            msg.textContent = "❌ ไม่สำเร็จ: " + (data.error || "รูปแบบข้อมูลไม่ถูกต้อง");
+            msg.textContent = "❌ ไม่สำเร็จ: " + (data.error || "รูปแบบไม่ตรงกัน");
             msg.style.color = "#dc2626";
             setTimeout(()=>msg.textContent="",3000);
         }
