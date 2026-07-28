@@ -23,13 +23,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { height: 100%; }
         body { 
-            background-image: url("https://www.dol.go.th/chbr-banbung/media.php?id=919746578930077696&name=73306eba-9c39-464d-b945-51c667421609.jpg");
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: center center;
-            background-attachment: fixed;
-            background-color: #f9e89c;
-            background-blend-mode: overlay;
+            background: #f9e89c;
             font-family: '"Chakra Petch"', sans-serif; 
             color: #46370d; 
             min-height: 100vh;
@@ -87,8 +81,8 @@
     </div>
 
     <script>
-        // 👇 เปลี่ยนเป็นลิงก์ /exec ล่าสุดที่เพิ่งสร้างใหม่
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYDeS8hagvYyiE7weaDUxEDltADJJDZYNyYDwLJaz2oPM1Wvzqw7FD3A8GqI15PAcYHg/execc";
+        // 👇 เปลี่ยนเป็นลิงก์ /exec ล่าสุดเท่านั้น
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzoCYuUfnPzlPDYLRrS6_nbWdUoiNglRP2J40M_cW3UHOMKKjqn6e_5Qt8vY4JSIVaf3w/exec";
 
         async function submitForm() {
             const nameInput = document.getElementById("fullName");
@@ -118,28 +112,38 @@
                 });
 
                 const rawText = await res.text();
+                console.log("ข้อมูลที่ได้จากระบบ:", rawText); // เช็คจริงในคอนโซล
                 let result;
+
                 try {
                     result = JSON.parse(rawText);
                 } catch (e) {
-                    throw new Error("ไม่สามารถเชื่อมต่อระบบได้ / ตรวจสอบลิงก์อีกครั้ง");
+                    throw new Error("ระบบไม่ส่งข้อมูลกลับ / ยังใช้โค้ดเก่า");
                 }
 
+                // ✅ ตรวจสอบสำเร็จแน่นอน + ล้างชื่อทันที
                 if (result.success === true && typeof result.order === "number") {
-                    // ✅ บันทึกสำเร็จ → แสดงผล + ล้างชื่อทันที
                     status.textContent = `✅ สำเร็จ! คุณเป็นผู้ลงนามคนที่ ${result.order}`;
                     status.style.color = "#166534";
-                    nameInput.value = ""; // ล้างชื่อออกทันทีตามที่ต้องการ
+                    nameInput.value = ""; // ล้างชื่อแน่นอน
                     setTimeout(() => status.textContent = "", 4000);
-                } else {
-                    // ❌ แสดงข้อความผิดพลาดชัดเจน
-                    status.textContent = "❌ ผิดพลาด: " + (result.error || "ไม่สามารถบันทึกข้อมูลได้");
+                }
+                // รองรับกรณีเก่าชั่วคราว (ถ้ายังส่ง status:ok)
+                else if (result.status === "ok" && result.order) {
+                    status.textContent = `✅ สำเร็จ! คุณเป็นผู้ลงนามคนที่ ${result.order}`;
+                    status.style.color = "#166534";
+                    nameInput.value = "";
+                    setTimeout(() => status.textContent = "", 4000);
+                }
+                else {
+                    status.textContent = "❌ ไม่สำเร็จ: " + (result.error || "รูปแบบข้อมูลไม่ถูกต้อง");
                     status.style.color = "#dc2626";
                     setTimeout(() => status.textContent = "", 3000);
                 }
 
             } catch (err) {
-                status.textContent = "❌ ผิดพลาด: " + err.message;
+                console.error("ผิดพลาด:", err);
+                status.textContent = "❌ ไม่สำเร็จ: " + err.message;
                 status.style.color = "#dc2626";
                 setTimeout(() => status.textContent = "", 3000);
             }
