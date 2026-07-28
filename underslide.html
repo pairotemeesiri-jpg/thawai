@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ถวายพระพรออนไลน์</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- เปลี่ยนเป็นฟอนต์ Chakra Petch มีหางชัดเจน ใช้ฟรีไม่ผิดลิขสิทธิ์ -->
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            base: '#d9b644',
+                            light: '#f9eb9f',
+                            main: '#c29b25',
+                            medium: '#a8821e',
+                            dark: '#866617',
+                            text: '#46370d'
+                        }
+                    },
+                    /* ตั้งค่าฟอนต์หลักเป็น Chakra Petch */
+                    fontFamily: { sarabun: ['"Chakra Petch"', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
+        body { 
+            background-image: url("https://www.dol.go.th/chbr-banbung/media.php?id=919746578930077696&name=73306eba-9c39-464d-b945-51c667421609.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            background-color: #d9b644;
+            background-blend-mode: overlay;
+            
+            font-family: '"Chakra Petch"', sans-serif; 
+            color: #46370d; 
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 1rem 0.5rem;
+            overflow-x: hidden;
+        }
+        .page-container {
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        .box { 
+            background: transparent;
+            border: none;
+            padding: 0;
+            box-shadow: none;
+        }
+        .image-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .royal-img { 
+            width: auto;
+            max-width: 100%;
+            height: 100%;
+            max-height: 100%;
+            display: block; 
+            margin: 0 auto; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15); 
+            object-fit: contain;
+        }
+        .top-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-top: 0.75rem;
+        }
+        .form-area {
+            margin-top: 0.5rem;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 10;
+        }
+        #fullName {
+            font-size: 1.3rem !important;
+            font-weight: 500 !important;
+            padding: 0.9rem 1rem !important;
+            height: auto !important;
+        }
+        button {
+            font-size: 1.25rem;
+            padding: 0.85rem;
+        }
+        #statusMsg {
+            min-height: 1.5rem;
+            padding-bottom: 0.25rem;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="box image-section text-center">
+            <img src="https://github.com/pairotemeesiri-jpg/porn/blob/main/Wachira.jpg" alt="พระบรมฉายาลักษณ์" class="royal-img" loading="lazy">
+            <p class="top-text font-medium">น้อมเกล้าถวายพระพรชัยมงคล<br>
+            สมเด็จพระเจ้าอยู่หัวมหาวชิราลงกรณ บดินทรเทพยวรางกูร<br>
+            มหิศรภูมิพลราชวรางกูร กิติสิริสมบูรณอดุลยเดช<br>สยามินทราธิเบศรราชวโรดม บรมนาถบพิตร<br>พระวชิรเกล้าเจ้าอยู่หัว</p>
+        </div>
+
+        <div class="box form-area">
+            <input type="text" id="fullName" placeholder="ชื่อ-นามสกุล" class="w-full border border-gold-main/60 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-main/50 mb-2 text-left bg-white/85">
+            <button id="submitBtn" class="w-full bg-gradient-to-r from-gold-main to-gold-dark hover:brightness-110 text-white font-semibold py-2 rounded-md shadow-md transition-all">
+                <i class="fa fa-check-circle mr-2"></i> ลงนามถวายพระพร
+            </button>
+            <div id="statusMsg" class="text-center mt-2 font-medium"></div>
+        </div>
+    </div>
+
+    <script>
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUnJ8G3DizF4tY9rX_8h7K6qNOIgj-BUwsheptglucVjqrPleXgYE3htSE5aWjXSmMYA/exec";
+
+        async function submitForm() {
+            const name = document.getElementById("fullName").value.trim();
+            const btn = document.getElementById("submitBtn");
+            const status = document.getElementById("statusMsg");
+
+            if (!name) {
+                status.textContent = "⚠️ กรุณากรอกชื่อให้ครบถ้วน";
+                status.style.color = "#b45309";
+                setTimeout(() => status.textContent = "", 2500);
+                return;
+            }
+
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
+            btn.disabled = true;
+            status.textContent = "";
+
+            try {
+                const formData = new FormData();
+                formData.append("name", name);
+
+                const res = await fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    body: formData,
+                    redirect: "follow"
+                });
+
+                if (!res.ok) throw new Error("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
+
+                const result = await res.json();
+
+                if (result.success) {
+                    document.getElementById("fullName").value = "";
+                    status.textContent = "✅ บันทึกข้อมูลเรียบร้อยแล้ว";
+                    status.style.color = "#166534";
+                } else {
+                    status.textContent = "❌ " + (result.error || "ไม่สามารถบันทึกได้");
+                    status.style.color = "#dc2626";
+                }
+                setTimeout(() => status.textContent = "", 2500);
+
+            } catch (err) {
+                console.error(err);
+                status.textContent = "❌ เชื่อมต่อไม่ได้ ตรวจสอบลิงก์";
+                status.style.color = "#dc2626";
+                setTimeout(() => status.textContent = "", 2500);
+            }
+
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa fa-check-circle mr-2"></i> ลงนามถวายพระพรชัยมงคล';
+                btn.disabled = false;
+            }, 1500);
+        }
+
+        document.getElementById("submitBtn").addEventListener("click", submitForm);
+        document.getElementById("fullName").addEventListener("keydown", e => {
+            if (e.key === "Enter") { e.preventDefault(); submitForm(); }
+        });
+    </script>
+</body>
+</html>
