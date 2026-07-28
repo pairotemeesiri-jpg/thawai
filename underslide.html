@@ -13,11 +13,10 @@
                 extend: {
                     colors: {
                         gold: {
-                            base: '#d9b644',
-                            light: '#f9eb9f',
-                            main: '#c29b25',
-                            medium: '#a8821e',
-                            dark: '#866617',
+                            bg: '#f9e89c',
+                            line: '#b8860b',
+                            btn: '#f2dd88',
+                            btnBorder: '#b8860b',
                             text: '#46370d'
                         }
                     },
@@ -37,7 +36,7 @@
             background-size: cover;
             background-position: center center;
             background-attachment: fixed;
-            background-color: #d9b644;
+            background-color: #f9e89c;
             background-blend-mode: overlay;
             
             font-family: '"Chakra Petch"', sans-serif; 
@@ -46,22 +45,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem 1rem 0.5rem;
+            padding: 1.5rem 1rem;
             overflow-x: hidden;
         }
         .page-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 550px;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.5rem;
             position: relative;
-        }
-        .box { 
-            background: transparent;
-            border: none;
-            padding: 0;
-            box-shadow: none;
         }
         .image-section {
             display: flex;
@@ -79,53 +72,97 @@
             object-fit: contain;
         }
         .top-text {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 600;
             line-height: 1.7;
             margin-top: 0.75rem;
             text-align: center;
         }
         .form-area {
-            margin-top: 0.5rem;
-            flex-shrink: 0;
-            position: relative;
-            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.75rem;
+            width: 100%;
         }
-        #fullName {
-            font-size: 1.2rem !important;
-            font-weight: 500 !important;
-            padding: 0.9rem 1rem !important;
-            height: auto !important;
-            font-family: inherit;
+        .input-group {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
-        button {
-            font-size: 1.2rem;
-            padding: 0.85rem;
+        .input-group label {
+            font-size: 1.35rem;
+            font-weight: 500;
+            white-space: nowrap;
+            color: #46370d;
+        }
+        .input-group input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #b8860b;
+            outline: none;
+            font-size: 1.35rem;
             font-family: inherit;
+            color: #46370d;
+            padding: 0.25rem 0.5rem;
+        }
+        .input-group input::placeholder {
+            color: #866617;
+            opacity: 0.7;
+        }
+        .submit-btn {
+            background: linear-gradient(180deg, #f9eb9f 0%, #e6c864 50%, #d4af37 100%);
+            border: 2px solid #b8860b;
+            border-radius: 999px;
+            padding: 0.9rem 2.25rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #46370d;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(134, 102, 23, 0.35), inset 0 1px 0 rgba(255,255,255,0.4);
+            transition: all 0.2s ease;
+            clip-path: polygon(0 50%, 8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%);
+        }
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(134, 102, 23, 0.45), inset 0 1px 0 rgba(255,255,255,0.5);
+        }
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
         }
         #statusMsg {
             min-height: 1.5rem;
-            padding-bottom: 0.25rem;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             text-align: center;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
     <div class="page-container">
-        <div class="box image-section">
+        <div class="image-section">
             <img src="https://www.dol.go.th/chbr-banbung/media.php?id=919746578930077696&name=73306eba-9c39-464d-b945-51c667421609.jpg" alt="พระบรมฉายาลักษณ์" class="royal-img" loading="lazy">
             <p class="top-text">น้อมเกล้าถวายพระพรชัยมงคล<br>
             สมเด็จพระเจ้าอยู่หัวมหาวชิราลงกรณ บดินทรเทพยวรางกูร<br>
             มหิศรภูมิพลราชวรางกูร กิติสิริสมบูรณอดุลยเดช<br>สยามินทราธิเบศรราชวโรดม บรมนาถบพิตร<br>พระวชิรเกล้าเจ้าอยู่หัว</p>
         </div>
 
-        <div class="box form-area">
-            <input type="text" id="fullName" placeholder="ชื่อ-นามสกุล" class="w-full border border-gold-main/60 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-main/50 mb-2 text-left bg-white/85">
-            <button id="submitBtn" class="w-full bg-gradient-to-r from-gold-main to-gold-dark hover:brightness-110 text-white font-semibold py-2 rounded-md shadow-md transition-all">
-                <i class="fa fa-check-circle mr-2"></i> ลงนามถวายพระพร
+        <div class="form-area">
+            <div class="input-group">
+                <label>ชื่อ – นามสกุล</label>
+                <input type="text" id="fullName" placeholder="">
+            </div>
+
+            <button id="submitBtn" class="submit-btn">
+                <i class="fa fa-file-text-o mr-2"></i> ลงนามถวายพระพร
             </button>
-            <div id="statusMsg" class="mt-2 font-medium"></div>
+
+            <div id="statusMsg"></div>
         </div>
     </div>
 
@@ -158,19 +195,18 @@
                     redirect: "follow"
                 });
 
-                if (!res.ok) throw new Error("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
-
                 const result = await res.json();
 
                 if (result.success) {
-                    document.getElementById("fullName").value = "";
-                    status.textContent = "✅ บันทึกข้อมูลเรียบร้อยแล้ว";
+                    // ✅ ชื่อไม่หาย + แสดงลำดับที่ลงนาม
+                    status.textContent = `✅ คุณเป็นผู้ลงนามคนที่ ${result.order}`;
                     status.style.color = "#166534";
+                    setTimeout(() => status.textContent = "", 4000);
                 } else {
                     status.textContent = "❌ " + (result.error || "ไม่สามารถบันทึกได้");
                     status.style.color = "#dc2626";
+                    setTimeout(() => status.textContent = "", 2500);
                 }
-                setTimeout(() => status.textContent = "", 2500);
 
             } catch (err) {
                 console.error(err);
@@ -180,7 +216,7 @@
             }
 
             setTimeout(() => {
-                btn.innerHTML = '<i class="fa fa-check-circle mr-2"></i> ลงนามถวายพระพร';
+                btn.innerHTML = '<i class="fa fa-file-text-o mr-2"></i> ลงนามถวายพระพร';
                 btn.disabled = false;
             }, 1500);
         }
