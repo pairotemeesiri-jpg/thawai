@@ -70,7 +70,6 @@
             border-radius: 8px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.15); 
             object-fit: contain;
-            /* ✅ ถ้าใช้บน GitHub ให้ใส่ไฟล์รูปไว้ใน repo แล้วเปลี่ยนเป็นชื่อไฟล์ตรงๆ เช่น src="Wachira.jpg" */
         }
         .top-text {
             font-size: 1.15rem;
@@ -109,10 +108,6 @@
             color: #46370d;
             padding: 0.25rem 0.5rem;
         }
-        .input-group input::placeholder {
-            color: #866617;
-            opacity: 0.7;
-        }
         .submit-btn {
             background: linear-gradient(180deg, #f9eb9f 0%, #e6c864 50%, #d4af37 100%);
             border: 2px solid #b8860b;
@@ -131,11 +126,6 @@
             transform: translateY(-1px);
             box-shadow: 0 5px 12px rgba(134, 102, 23, 0.45), inset 0 1px 0 rgba(255,255,255,0.5);
         }
-        .submit-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
         #statusMsg {
             min-height: 1.5rem;
             font-size: 1.15rem;
@@ -147,8 +137,8 @@
 <body>
     <div class="page-container">
         <div class="image-section">
-            <!-- ✅ แนะนำ: อัปโหลดรูปขึ้น GitHub ด้วย แล้วเปลี่ยน src="ชื่อไฟล์.jpg" แทนลิงก์ภายนอก -->
-            <img src="Wachira.jpg" alt="พระบรมฉายาลักษณ์" class="royal-img" loading="lazy" onerror="this.style.display='none'">
+            <!-- เปลี่ยนเป็นชื่อไฟล์รูปที่อัปโหลดจริง -->
+            <img src="Wachira.jpg" alt="พระบรมฉายาลักษณ์" class="royal-img" loading="lazy">
             <p class="top-text">น้อมเกล้าถวายพระพรชัยมงคล<br>
             สมเด็จพระเจ้าอยู่หัวมหาวชิราลงกรณ บดินทรเทพยวรางกูร<br>
             มหิศรภูมิพลราชวรางกูร กิติสิริสมบูรณอดุลยเดช<br>สยามินทราธิเบศรราชวโรดม บรมนาถบพิตร<br>พระวชิรเกล้าเจ้าอยู่หัว</p>
@@ -169,8 +159,8 @@
     </div>
 
     <script>
-        // ✅ ใส่ลิงก์ Apps Script ที่ Deploy ใหม่ตรงนี้
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxG8-A6JF5Lc4AumXlggiYajk0Fm_s_mqHjNrfT9MIuqrAipxbYoENFQSmicwrbwFvx/exec";
+        // ตรวจสอบลิงก์นี้ให้ตรงกับหลัง Deploy ใหม่
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz3Ddu2VrSNmjeU1JU2WAlLSbUudw4ulFePtRuRfn7AGP7wqpTeMhk70jgbf7Yc13ozVw/exec";
 
         async function submitForm() {
             const name = document.getElementById("fullName").value.trim();
@@ -198,10 +188,16 @@
                     redirect: "follow"
                 });
 
-                const result = await res.json();
+                // ตรวจสอบก่อนแปลงข้อมูล ป้องกัน undefined
+                const raw = await res.text();
+                let result;
+                try {
+                    result = JSON.parse(raw);
+                } catch {
+                    throw new Error("ยังไม่ได้ Deploy ใหม่ / Script ไม่ส่ง JSON");
+                }
 
-                if (result.success && result.order) {
-                    // ✅ ป้องกัน undefined
+                if (result.success && typeof result.order === "number") {
                     status.textContent = `✅ คุณเป็นผู้ลงนามคนที่ ${result.order}`;
                     status.style.color = "#166534";
                     setTimeout(() => status.textContent = "", 4000);
@@ -213,7 +209,7 @@
 
             } catch (err) {
                 console.error(err);
-                status.textContent = "❌ เชื่อมต่อไม่ได้ ตรวจสอบการเชื่อมต่อ/Deploy ใหม่";
+                status.textContent = "❌ " + err.message;
                 status.style.color = "#dc2626";
                 setTimeout(() => status.textContent = "", 2500);
             }
