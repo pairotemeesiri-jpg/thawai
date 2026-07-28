@@ -82,8 +82,8 @@
     </div>
 
     <script>
-        // ✅ ใส่ลิงก์ใหม่ที่ได้จากการสร้าง Deployment ใหม่ตรงนี้
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbws10D6eSPU7-zLE9LAx3Bnz8s03exKawVRc60t_HBFz9J-sV3L_Q58cLw5gzXWFCSu0Q/exec";
+        // ใส่ลิงก์ใหม่ตรงนี้
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby5Hojg5bBibQnBK4-iXI8xCEXLtK3kA_4CwaWhmwyDSs9WSl4g7g32IYsLMy0vNnQjDA/exec";
 
         async function submitForm() {
             const name = document.getElementById("fullName").value.trim();
@@ -109,7 +109,7 @@
                 const raw = await res.text();
                 let result;
                 try { result = JSON.parse(raw); } 
-                catch { throw new Error("Script ยังไม่ใช่ JSON → ให้สร้าง Deployment ใหม่"); }
+                catch { throw new Error("ยังไม่ได้สร้าง Deployment ใหม่ / Script ไม่ส่ง JSON"); }
 
                 if (result.success && typeof result.order === "number") {
                     status.textContent = `✅ คุณเป็นผู้ลงนามคนที่ ${result.order}`;
