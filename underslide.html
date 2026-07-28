@@ -83,7 +83,22 @@
 
     <script>
         // 👇 ใส่ลิงก์ /exec ที่ทดสอบได้จริงตรงนี้
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwddtzx5EFnoM7QaMoUZ1tIMF1LacxPeDGhdFXcjMyqpt8FDJJurPODK-UwHeH12yejMg/exec";
+        const APPS_SCRIPT_URL = "function doPost(e) {
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    const name = e.parameter.name || "";
+    if(name === "") throw new Error("กรุณากรอกชื่อ");
+    sheet.appendRow([new Date(), name]);
+    const total = sheet.getLastRow();
+    return ContentService.createTextOutput(
+      JSON.stringify({ success: true, order: total })
+    ).setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ success: false, error: err.message })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+}";
 
         async function submitForm() {
             const name = document.getElementById("fullName").value.trim();
