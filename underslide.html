@@ -137,7 +137,6 @@
 <body>
     <div class="page-container">
         <div class="image-section">
-            <!-- เปลี่ยนเป็นชื่อไฟล์รูปที่อัปโหลดจริง -->
             <img src="Wachira.jpg" alt="พระบรมฉายาลักษณ์" class="royal-img" loading="lazy">
             <p class="top-text">น้อมเกล้าถวายพระพรชัยมงคล<br>
             สมเด็จพระเจ้าอยู่หัวมหาวชิราลงกรณ บดินทรเทพยวรางกูร<br>
@@ -159,8 +158,8 @@
     </div>
 
     <script>
-        // ตรวจสอบลิงก์นี้ให้ตรงกับหลัง Deploy ใหม่
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzT9OXCYJ3QjzfBiFgoD2d5tR5zgVNbOoKsKAbvEcK0IHB6ClHhkF_4V1NWOYYEr92mgw/exec";
+        // ตรวจสอบลิงก์นี้ให้ตรงกับเวอร์ชันที่ Deploy ล่าสุด
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqnhbHa-z7yHlNBXzdDfjdN4i2AFyHNe30JXrOH1dd1fAL8ACuIa3fEzK43177zXhMkQ/exec";
 
         async function submitForm() {
             const name = document.getElementById("fullName").value.trim();
@@ -188,13 +187,13 @@
                     redirect: "follow"
                 });
 
-                // ตรวจสอบก่อนแปลงข้อมูล ป้องกัน undefined
-                const raw = await res.text();
+                // ตรวจสอบก่อนแปลงข้อมูล ป้องกันกรณี Script ยังไม่ใช่ JSON
+                const rawText = await res.text();
                 let result;
                 try {
-                    result = JSON.parse(raw);
-                } catch {
-                    throw new Error("ยังไม่ได้ Deploy ใหม่ / Script ไม่ส่ง JSON");
+                    result = JSON.parse(rawText);
+                } catch (e) {
+                    throw new Error("ยังไม่ได้ Deploy เวอร์ชันใหม่ / Script ไม่ส่งข้อมูลถูกต้อง");
                 }
 
                 if (result.success && typeof result.order === "number") {
