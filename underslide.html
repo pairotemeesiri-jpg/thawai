@@ -70,6 +70,7 @@
             border-radius: 8px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.15); 
             object-fit: contain;
+            /* ✅ ถ้าใช้บน GitHub ให้ใส่ไฟล์รูปไว้ใน repo แล้วเปลี่ยนเป็นชื่อไฟล์ตรงๆ เช่น src="Wachira.jpg" */
         }
         .top-text {
             font-size: 1.15rem;
@@ -146,7 +147,8 @@
 <body>
     <div class="page-container">
         <div class="image-section">
-            <img src="https://www.dol.go.th/chbr-banbung/media.php?id=919746578930077696&name=73306eba-9c39-464d-b945-51c667421609.jpg" alt="พระบรมฉายาลักษณ์" class="royal-img" loading="lazy">
+            <!-- ✅ แนะนำ: อัปโหลดรูปขึ้น GitHub ด้วย แล้วเปลี่ยน src="ชื่อไฟล์.jpg" แทนลิงก์ภายนอก -->
+            <img src="Wachira.jpg" alt="พระบรมฉายาลักษณ์" class="royal-img" loading="lazy" onerror="this.style.display='none'">
             <p class="top-text">น้อมเกล้าถวายพระพรชัยมงคล<br>
             สมเด็จพระเจ้าอยู่หัวมหาวชิราลงกรณ บดินทรเทพยวรางกูร<br>
             มหิศรภูมิพลราชวรางกูร กิติสิริสมบูรณอดุลยเดช<br>สยามินทราธิเบศรราชวโรดม บรมนาถบพิตร<br>พระวชิรเกล้าเจ้าอยู่หัว</p>
@@ -167,7 +169,8 @@
     </div>
 
     <script>
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyRV0h1APeunHYnmegMNAaBeDHUMivFdLVCvZ96yFCHisRcpG4Ge_arZz6ol6iT3JlGUg/exec";
+        // ✅ ใส่ลิงก์ Apps Script ที่ Deploy ใหม่ตรงนี้
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUnJ8G3DizF4tY9rX_8h7K6qNOIgj-BUwsheptglucVjqrPleXgYE3htSE5aWjXSmMYA/exec";
 
         async function submitForm() {
             const name = document.getElementById("fullName").value.trim();
@@ -197,8 +200,8 @@
 
                 const result = await res.json();
 
-                if (result.success) {
-                    // ✅ ชื่อไม่หาย + แสดงลำดับที่ลงนาม
+                if (result.success && result.order) {
+                    // ✅ ป้องกัน undefined
                     status.textContent = `✅ คุณเป็นผู้ลงนามคนที่ ${result.order}`;
                     status.style.color = "#166534";
                     setTimeout(() => status.textContent = "", 4000);
@@ -210,7 +213,7 @@
 
             } catch (err) {
                 console.error(err);
-                status.textContent = "❌ เชื่อมต่อไม่ได้ กรุณาลองใหม่อีกครั้ง";
+                status.textContent = "❌ เชื่อมต่อไม่ได้ ตรวจสอบการเชื่อมต่อ/Deploy ใหม่";
                 status.style.color = "#dc2626";
                 setTimeout(() => status.textContent = "", 2500);
             }
