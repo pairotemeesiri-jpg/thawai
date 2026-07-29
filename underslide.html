@@ -58,16 +58,15 @@
 </div>
 
 <script>
-// 📌 Web App URL จาก Google Apps Script
-const URL = "https://script.google.com/macros/s/AKfycbwIlg7VKh5qFOHv_acSjGvC3OvdKQlZu-LoPpEBK5DiEt85jqtVH0g0olzJfgiQSJcBow/exec";
+// 📌 Web App URL
+const URL = "https://script.google.com/macros/s/AKfycbzwCCA4C1Jy0s9Czo4LOtayxDtFZWL63UadytYiCmolVEKEUbu7SM4ENC3y-axTlGM8uQ/exec";
 
 document.getElementById("btnSend").addEventListener("click", async () => {
     const nameInput = document.getElementById("fullName");
     const name = nameInput.value.trim();
     const btn = document.getElementById("btnSend");
-    const msg = document.getElementById("msg"); // กำหนด const ป้องกัน Error scope
+    const msg = document.getElementById("msg");
 
-    // ตรวจสอบว่ากรอกชื่อหรือไม่
     if(!name){ 
         msg.textContent = "⚠️ กรุณากรอกชื่อ-นามสกุล"; 
         msg.style.color = "#b45309"; 
@@ -76,7 +75,6 @@ document.getElementById("btnSend").addEventListener("click", async () => {
         return; 
     }
 
-    // สถานะกำลังบันทึก
     btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
     btn.disabled = true; 
     msg.textContent = "";
@@ -90,25 +88,35 @@ document.getElementById("btnSend").addEventListener("click", async () => {
         });
         
         const txt = await res.text();
-        console.log("📌 ผลลัพธ์ที่ตอบกลับมา:", txt);
+        console.log("📌 ตอบกลับจาก Apps Script:", txt);
 
         let data;
         try { 
             data = JSON.parse(txt); 
         } catch(err) { 
-            throw new Error("ตอบกลับไม่ใช่ JSON (โปรดเช็คการ Deploy ให้เป็น Anyone)"); 
+            throw new Error("ตอบกลับไม่ใช่ JSON"); 
         }
 
-        // รองรับการอ่านค่าลำดับจากหลายชื่อคีย์ (order, row, lastRow)
-        const orderNum = data.order ?? data.row ?? data.lastRow;
+        // ตรวจสอบสถานะการบันทึก
+        const isSuccess = data && (data.success === true || data.success === "true" || data.status === "success");
 
-        if (data && (data.success === true || data.success === "true") && orderNum !== undefined && orderNum !== null) {
-            msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${orderNum}`;
+        if (isSuccess) {
+            // ดึงค่าลำดับจากทุกคีย์ที่เป็นไปได้
+            const rawOrder = data.order ?? data.row ?? data.lastRow ?? data.result ?? data.count;
+            const orderNum = Number(rawOrder);
+
+            // เช็กว่าเป็นตัวเลขที่ถูกต้องจริงหรือไม่
+            if (!isNaN(orderNum) && orderNum > 0) {
+                msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${orderNum}`;
+            } else {
+                msg.textContent = `✅ บันทึกข้อมูลสำเร็จ ขอบคุณที่ร่วมลงนาม`;
+            }
+
             msg.style.color = "#166534";
             nameInput.value = "";
             setTimeout(() => msg.textContent = "", 5000);
         } else {
-            msg.textContent = "❌ ไม่สำเร็จ: " + (data.error || "เกิดข้อผิดพลาดในการรับข้อมูล");
+            msg.textContent = "❌ ไม่สำเร็จ: " + (data.error || "เกิดข้อผิดพลาดในการบันทึก");
             msg.style.color = "#dc2626";
             setTimeout(() => msg.textContent = "", 5000);
         }
@@ -123,7 +131,6 @@ document.getElementById("btnSend").addEventListener("click", async () => {
     }
 });
 
-// รองรับการกด Enter
 document.getElementById("fullName").addEventListener("keydown", e => {
     if (e.key === "Enter") document.getElementById("btnSend").click();
 });
