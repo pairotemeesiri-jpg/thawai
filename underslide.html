@@ -48,7 +48,37 @@
 
 <script>
 // 👇 วางลิงก์ /exec ที่เพิ่งสร้างใหม่ตรงนี้
-const URL = "https://script.google.com/macros/s/AKfycbx8qv2b3gvDU-mz4TveJa_WgoRkeZDy7QS9Fv0jwD5ZcMESCRSQoPIjjF_1FmeZwoDGXw/exec";
+const URL = "function doPost(e) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName("รายชื่อ") || ss.getActiveSheet();
+    const name = e.parameter.name;
+
+    if (!name) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        error: "ไม่ได้รับชื่อ"
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const lastRow = sheet.getLastRow();
+    const order = lastRow; // ถ้ามีหัวข้อแถวแรก เปลี่ยนเป็น lastRow - 1
+
+    sheet.appendRow([new Date(), name]);
+
+    // ✅ ต้องส่ง success กับ order เสมอ
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      order: order
+    })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: err.message
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}";
 
 document.getElementById("btnSend").addEventListener("click", async () => {
     const nameInput = document.getElementById("fullName");
