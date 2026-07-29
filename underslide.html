@@ -59,7 +59,7 @@
 
 <script>
 // 📌 Web App URL
-const URL = "https://script.google.com/macros/s/AKfycbzwCCA4C1Jy0s9Czo4LOtayxDtFZWL63UadytYiCmolVEKEUbu7SM4ENC3y-axTlGM8uQ/exec";
+const URL = "https://script.google.com/macros/s/AKfycbxtnnZfFORRA1WkObmxpi9XOd2qMxgzF70_GuvnqzAH5BHox3P2WaNMWbb1aMpWw37sOQ/exec";
 
 document.getElementById("btnSend").addEventListener("click", async () => {
     const nameInput = document.getElementById("fullName");
@@ -88,24 +88,23 @@ document.getElementById("btnSend").addEventListener("click", async () => {
         });
         
         const txt = await res.text();
-        console.log("📌 ตอบกลับจาก Apps Script:", txt);
+        console.log("📌 ข้อมูลที่รับกลับมาจาก Apps Script:", txt);
 
         let data = {};
         try { 
             data = JSON.parse(txt); 
         } catch(err) { 
-            console.log("ตอบกลับไม่ใช่ JSON แต่ส่งสำเร็จแล้ว");
+            console.error("รับข้อความที่ไม่ใช่ JSON:", txt);
         }
 
-        // เช็คว่ามีข้อความ Error ส่งมาโดยตรงหรือไม่
         if (data && data.error) {
             msg.textContent = "❌ ไม่สำเร็จ: " + data.error;
             msg.style.color = "#dc2626";
             setTimeout(() => msg.textContent = "", 5000);
         } else {
-            // ดึงเลขลำดับ
+            // ดึงค่าลำดับจากทุกคีย์ที่อาจเกิดขึ้น
             const rawOrder = data.order ?? data.row ?? data.lastRow ?? data.result ?? data.count;
-            const orderNum = Number(rawOrder);
+            const orderNum = parseInt(rawOrder, 10);
 
             if (!isNaN(orderNum) && orderNum > 0) {
                 msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${orderNum}`;
