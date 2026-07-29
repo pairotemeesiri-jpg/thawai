@@ -59,7 +59,7 @@
 
 <script>
 // 📌 Web App URL
-const URL = "https://script.google.com/macros/s/AKfycbxtnnZfFORRA1WkObmxpi9XOd2qMxgzF70_GuvnqzAH5BHox3P2WaNMWbb1aMpWw37sOQ/exec";
+const URL = "https://script.google.com/macros/s/AKfycbz13_7yJAm7FTtDyw01gKokiTSjFSwMI6UmFMqARCw3T78VeuLSDk_YlQt50A5U8fw1/exec";
 
 document.getElementById("btnSend").addEventListener("click", async () => {
     const nameInput = document.getElementById("fullName");
@@ -88,37 +88,23 @@ document.getElementById("btnSend").addEventListener("click", async () => {
         });
         
         const txt = await res.text();
-        console.log("📌 ข้อมูลที่รับกลับมาจาก Apps Script:", txt);
+        console.log("📌 ตอบกลับจาก Apps Script:", txt);
 
-        let data = {};
-        try { 
-            data = JSON.parse(txt); 
-        } catch(err) { 
-            console.error("รับข้อความที่ไม่ใช่ JSON:", txt);
-        }
+        const data = JSON.parse(txt);
 
-        if (data && data.error) {
-            msg.textContent = "❌ ไม่สำเร็จ: " + data.error;
-            msg.style.color = "#dc2626";
-            setTimeout(() => msg.textContent = "", 5000);
-        } else {
-            // ดึงค่าลำดับจากทุกคีย์ที่อาจเกิดขึ้น
-            const rawOrder = data.order ?? data.row ?? data.lastRow ?? data.result ?? data.count;
-            const orderNum = parseInt(rawOrder, 10);
-
-            if (!isNaN(orderNum) && orderNum > 0) {
-                msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${orderNum}`;
-            } else {
-                msg.textContent = `✅ บันทึกข้อมูลสำเร็จ ขอบคุณที่ร่วมลงนาม`;
-            }
-
+        if (data && data.success === true) {
+            msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${data.order}`;
             msg.style.color = "#166534";
             nameInput.value = "";
+            setTimeout(() => msg.textContent = "", 5000);
+        } else {
+            msg.textContent = "❌ ไม่สำเร็จ: " + (data.error || "เกิดข้อผิดพลาดในการบันทึก");
+            msg.style.color = "#dc2626";
             setTimeout(() => msg.textContent = "", 5000);
         }
     } catch(e) {
         console.error("❌ ข้อผิดพลาด:", e);
-        msg.textContent = "❌ ไม่สำเร็จ: " + e.message;
+        msg.textContent = "❌ เกิดข้อผิดพลาดในการเชื่อมต่อ";
         msg.style.color = "#dc2626";
         setTimeout(() => msg.textContent = "", 5000);
     } finally {
