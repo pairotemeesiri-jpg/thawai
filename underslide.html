@@ -25,16 +25,17 @@
         body{background:#f9e89c;font-family:'Chakra Petch',sans-serif;color:#46370d;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem 1rem}
         .wrap{width:100%;max-width:550px;display:flex;flex-direction:column;gap:1.5rem}
         .img-box{text-align:center}
-        .royal-img{max-width:320px;width:100%;border-radius:8px;margin:0 auto}
-        .title{font-size:1.15rem;font-weight:600;line-height:1.7;margin-top:.75rem}
+        .royal-img{max-width:320px;width:100%;border-radius:8px;margin:0 auto;box-shadow:0 4px 12px rgba(184, 134, 11, 0.2)}
+        .title{font-size:1.15rem;font-weight:600;line-height:1.8;margin-top:.75rem}
         .form{display:flex;flex-direction:column;gap:1.75rem;width:100%}
         .inp-group{display:flex;align-items:center;gap:.75rem;width:100%}
         .inp-group label{font-size:1.35rem;font-weight:500;white-space:nowrap}
-        .inp-group input{flex:1;background:transparent;border:none;border-bottom:2px solid #b8860b;outline:none;font-size:1.35rem;color:#46370d;padding:.25rem .5rem}
-        .inp-group input:focus{border-bottom-color:#8b6914}
-        .btn{background:linear-gradient(180deg,#f9eb9f,#e6c864 50%,#d4af37);border:2px solid #b8860b;border-radius:999px;padding:.9rem 2.25rem;font-size:1.25rem;font-weight:600;color:#46370d;cursor:pointer;clip-path:polygon(0 50%,8% 0,92% 0,100% 50%,92% 100%,8% 100%);transition:.2s}
-        .btn:hover{transform:translateY(-1px)}
-        .btn:disabled{opacity:0.7;cursor:not-allowed;transform:none}
+        .inp-group input{flex:1;background:transparent;border:none;border-bottom:2px solid #b8860b;outline:none;font-size:1.35rem;color:#46370d;padding:.25rem .5rem;transition:border-color 0.2s ease}
+        .inp-group input:focus{border-bottom-color:#8b6914;background-color:rgba(255,255,255,0.3)}
+        .btn{background:linear-gradient(180deg,#f9eb9f,#e6c864 50%,#d4af37);border:2px solid #b8860b;border-radius:999px;padding:.9rem 2.25rem;font-size:1.25rem;font-weight:600;color:#46370d;cursor:pointer;clip-path:polygon(0 50%,8% 0,92% 0,100% 50%,92% 100%,8% 100%);transition:.2s ease}
+        .btn:hover{transform:translateY(-2px);box-shadow:0 6px 15px rgba(184, 134, 11, 0.3)}
+        .btn:active{transform:translateY(0)}
+        .btn:disabled{opacity:0.7;cursor:not-allowed;transform:none;box-shadow:none}
         #msg{min-height:1.5rem;font-size:1.15rem;font-weight:600;text-align:center;transition:opacity 0.2s ease}
     </style>
 </head>
@@ -50,7 +51,7 @@
     <div class="form">
         <div class="inp-group">
             <label>ชื่อ – นามสกุล</label>
-            <input type="text" id="fullName" autocomplete="name" placeholder="กรอกชื่อและนามสกุล">
+            <input type="text" id="fullName" autocomplete="name" placeholder="กรอกชื่อและนามสกุล" maxlength="100">
         </div>
         <button id="btnSend" class="btn"><i class="fa fa-file-text-o mr-2"></i> ลงนามถวายพระพร</button>
         <div id="msg"></div>
@@ -59,7 +60,7 @@
 
 <script>
 // 📌 Web App URL
-const URL = "https://script.google.com/macros/s/AKfycbz13_7yJAm7FTtDyw01gKokiTSjFSwMI6UmFMqARCw3T78VeuLSDk_YlQt50A5U8fw1/exec";
+const URL = "https://script.google.com/macros/s/AKfycbyGJDW5lJxVRQV4uR0x5nG8JbGwLEAcx0rWtEnEajqkZj5AmmcOMzst1AilX6BvFwZKjQ/exec";
 
 document.getElementById("btnSend").addEventListener("click", async () => {
     const nameInput = document.getElementById("fullName");
@@ -93,18 +94,20 @@ document.getElementById("btnSend").addEventListener("click", async () => {
         const data = JSON.parse(txt);
 
         if (data && data.success === true) {
-            msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${data.order}`;
+            // ✅ แสดงลำดับที่และจำนวนรวมทั้งหมด
+            msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${data.order} (รวมทั้งหมด ${data.total} คน)`;
             msg.style.color = "#166534";
             nameInput.value = "";
             setTimeout(() => msg.textContent = "", 5000);
         } else {
-            msg.textContent = "❌ ไม่สำเร็จ: " + (data.error || "เกิดข้อผิดพลาดในการบันทึก");
+            // ❌ ไม่แสดงสาเหตุข้อผิดพลาด
+            msg.textContent = "❌ ไม่สามารถบันทึกได้";
             msg.style.color = "#dc2626";
             setTimeout(() => msg.textContent = "", 5000);
         }
     } catch(e) {
         console.error("❌ ข้อผิดพลาด:", e);
-        msg.textContent = "❌ เกิดข้อผิดพลาดในการเชื่อมต่อ";
+        msg.textContent = "❌ ไม่สามารถบันทึกได้";
         msg.style.color = "#dc2626";
         setTimeout(() => msg.textContent = "", 5000);
     } finally {
