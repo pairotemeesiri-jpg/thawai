@@ -50,7 +50,7 @@
     <div class="form">
         <div class="inp-group">
             <label>ชื่อ – นามสกุล</label>
-            <input type="text" id="fullName" autocomplete="name">
+            <input type="text" id="fullName" autocomplete="name" placeholder="กรอกชื่อและนามสกุล">
         </div>
         <button id="btnSend" class="btn"><i class="fa fa-file-text-o mr-2"></i> ลงนามถวายพระพร</button>
         <div id="msg"></div>
@@ -58,8 +58,8 @@
 </div>
 
 <script>
-// 📌 วางลิงก์ /exec ใหม่ที่เพิ่งคัดลอกมาตรงนี้
-const URL = "https://script.google.com/macros/s/AKfycbzTLWcDfK64cab4HrpB-QRUAry6ACtWRGpOND6x1g4UXBcG7cegkUMszA5kp9cqs6i8wQ/exec";
+// 📌 นำ URL จาก Apps Script Web App ที่ได้จากการ Deploy มาวางตรงนี้
+const URL = "https://script.google.com/macros/s/AKfycbzwCCA4C1Jy0s9Czo4LOtayxDtFZWL63UadytYiCmolVEKEUbu7SM4ENC3y-axTlGM8uQ/exec";
 
 document.getElementById("btnSend").addEventListener("click", async () => {
     const nameInput = document.getElementById("fullName");
@@ -67,48 +67,75 @@ document.getElementById("btnSend").addEventListener("click", async () => {
     const btn = document.getElementById("btnSend");
     const msg = document.getElementById("msg");
 
-    if(!name){ msg.textContent="⚠️ กรุณากรอกชื่อ-นามสกุล"; msg.style.color="#b45309"; setTimeout(()=>msg.textContent="",2500); nameInput.focus(); return; }
+    // ตรวจสอบว่ากรอกชื่อหรือไม่
+    if(!name){ 
+        msg.textContent = "⚠️ กรุณากรอกชื่อ-นามสกุล"; 
+        msg.style.color = "#b45309"; 
+        setTimeout(() => msg.textContent = "", 2500); 
+        nameInput.focus(); 
+        return; 
+    }
 
-    btn.innerHTML='<i class="fa fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
-    btn.disabled=true; msg.textContent="";
+    // แสดงสถานะกำลังบันทึก
+    btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
+    btn.disabled = true; 
+    msg.textContent = "";
 
-    try{
+    try {
         const res = await fetch(URL, {
             method: "POST",
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: "name=" + encodeURIComponent(name),
             redirect: "follow"
         });
+        
         const txt = await res.text();
-        console.log("📌 ผลลัพธ์ดิบ:", txt);
+        console.log("📌 ผลลัพธ์ดิบจาก Server:", txt);
 
         let data;
-        try { data = JSON.parse(txt); } 
-        catch { throw new Error("ไม่ใช่ JSON: " + txt); }
+        try { 
+            data = JSON.parse(txt); 
+        } catch(err) { 
+            console.error("ตอบกลับที่ไม่ใช่ JSON:", txt);
+            throw new Error("ระบบตอบกลับผิดพลาด (โปรดเช็คการ Deploy ให้เป็น Anyone)"); 
+        }
 
+        // ตรวจสอบสถานะความสำเร็จและหาลำดับ
         let ok = false, num = null;
-        if (data.success===true && typeof data.order==="number") { ok=true; num=data.order; }
+        if (data && (data.success === true || data.success === "true")) {
+            const rawOrder = data.order ?? data.row ?? data.lastRow;
+            if (rawOrder !== undefined && rawOrder !== null) {
+                num = Number(rawOrder);
+                if (!isNaN(num)) ok = true;
+            }
+        }
 
         if (ok) {
             msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${num}`;
             msg.style.color = "#166534";
             nameInput.value = "";
-            setTimeout(()=>msg.textContent="",4000);
+            setTimeout(() => msg.textContent = "", 5000);
         } else {
-            msg.textContent = "❌ ไม่สำเร็จ: " + (data.error || "ผิดพลาด");
+            msg.textContent = "❌ ไม่สำเร็จ: " + (data.error || "ไม่สามารถดึงลำดับได้");
             msg.style.color = "#dc2626";
-            setTimeout(()=>msg.textContent="",3000);
+            setTimeout(() => msg.textContent = "", 4000);
         }
-    }catch(e){
+    } catch(e) {
         console.error("❌ ข้อผิดพลาด:", e);
-        msg.textContent="❌ ไม่สำเร็จ: " + e.message;
-        msg.style.color="#dc2626";
-        setTimeout(()=>msg.textContent="",3000);
+        msg.textContent = "❌ ไม่สำเร็จ: " + e.message;
+        msg.style.color = "#dc2626";
+        setTimeout(() => msg.textContent = "", 4000);
+    } finally {
+        // คืนค่าปุ่มกดให้เป็นปกติ
+        btn.innerHTML = '<i class="fa fa-file-text-o mr-2"></i> ลงนามถวายพระพร'; 
+        btn.disabled = false;
     }
-
-    setTimeout(()=>{ btn.innerHTML='<i class="fa fa-file-text-o mr-2"></i> ลงนามถวายพระพร'; btn.disabled=false; },1500);
 });
-document.getElementById("fullName").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("btnSend").click()});
+
+// รองรับการกดปุ่ม Enter ในช่องกรอกชื่อ
+document.getElementById("fullName").addEventListener("keydown", e => {
+    if (e.key === "Enter") document.getElementById("btnSend").click();
+});
 </script>
 </body>
 </html>
