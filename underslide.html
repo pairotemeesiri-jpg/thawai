@@ -8,122 +8,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        gold: {
-                            bg: '#f9e89c',
-                            line: '#b8860b',
-                            btn: '#f2dd88',
-                            text: '#46370d'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['"Chakra Petch"', 'sans-serif']
-                    }
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { gold: { bg:'#f9e89c', line:'#b8860b', btn:'#f2dd88', text:'#46370d' } }, fontFamily: { sans: ['"Chakra Petch"', 'sans-serif'] } } } }
     </script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html, body {
-            height: 100%;
-        }
-        body {
-            background: #f9e89c;
-            font-family: 'Chakra Petch', sans-serif;
-            color: #46370d;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem 1rem;
-        }
-        .wrap {
-            width: 100%;
-            max-width: 550px;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-        .img-box {
-            text-align: center;
-        }
-        .royal-img {
-            max-width: 320px;
-            width: 100%;
-            border-radius: 8px;
-            margin: 0 auto;
-        }
-        .title {
-            font-size: 1.15rem;
-            font-weight: 600;
-            line-height: 1.7;
-            margin-top: .75rem;
-        }
-        .form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.75rem;
-            width: 100%;
-        }
-        .inp-group {
-            display: flex;
-            align-items: center;
-            gap: .75rem;
-            width: 100%;
-        }
-        .inp-group label {
-            font-size: 1.35rem;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        .inp-group input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid #b8860b;
-            outline: none;
-            font-size: 1.35rem;
-            color: #46370d;
-            padding: .25rem .5rem;
-        }
-        .inp-group input:focus {
-            border-bottom-color: #8b6914;
-        }
-        .btn {
-            background: linear-gradient(180deg, #f9eb9f, #e6c864 50%, #d4af37);
-            border: 2px solid #b8860b;
-            border-radius: 999px;
-            padding: .9rem 2.25rem;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #46370d;
-            cursor: pointer;
-            clip-path: polygon(0 50%, 8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%);
-            transition: .2s;
-        }
-        .btn:hover {
-            transform: translateY(-1px);
-        }
-        .btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-        #msg {
-            min-height: 1.5rem;
-            font-size: 1.15rem;
-            font-weight: 600;
-            text-align: center;
-            transition: opacity 0.2s ease;
-        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html,body{height:100%}
+        body{background:#f9e89c;font-family:'Chakra Petch',sans-serif;color:#46370d;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem 1rem}
+        .wrap{width:100%;max-width:550px;display:flex;flex-direction:column;gap:1.5rem}
+        .img-box{text-align:center}
+        .royal-img{max-width:320px;width:100%;border-radius:8px;margin:0 auto}
+        .title{font-size:1.15rem;font-weight:600;line-height:1.7;margin-top:.75rem}
+        .form{display:flex;flex-direction:column;gap:1.75rem;width:100%}
+        .inp-group{display:flex;align-items:center;gap:.75rem;width:100%}
+        .inp-group label{font-size:1.35rem;font-weight:500;white-space:nowrap}
+        .inp-group input{flex:1;background:transparent;border:none;border-bottom:2px solid #b8860b;outline:none;font-size:1.35rem;color:#46370d;padding:.25rem .5rem}
+        .btn{background:linear-gradient(180deg,#f9eb9f,#e6c864 50%,#d4af37);border:2px solid #b8860b;border-radius:999px;padding:.9rem 2.25rem;font-size:1.25rem;font-weight:600;color:#46370d;cursor:pointer;clip-path:polygon(0 50%,8% 0,92% 0,100% 50%,92% 100%,8% 100%);transition:.2s}
+        .btn:hover{transform:translateY(-1px)}
+        #msg{min-height:1.5rem;font-size:1.15rem;font-weight:600;text-align:center}
     </style>
 </head>
 <body>
@@ -138,7 +39,7 @@
     <div class="form">
         <div class="inp-group">
             <label>ชื่อ – นามสกุล</label>
-            <input type="text" id="fullName" autocomplete="name">
+            <input type="text" id="fullName">
         </div>
         <button id="btnSend" class="btn"><i class="fa fa-file-text-o mr-2"></i> ลงนามถวายพระพร</button>
         <div id="msg"></div>
@@ -146,10 +47,8 @@
 </div>
 
 <script>
-// ==============================
-// 📌 วางลิงก์ /exec ที่เพิ่งสร้างใหม่ตรงนี้
-const URL = "https://script.google.com/macros/s/AKfycbxPjInq-RJx0aOaeyq0-8pp1LBY6_boslskygcqyG4SWQ20VGZwNw-E-cwjqw0It2SKHQ/exec";
-// ==============================
+// 👇 เปลี่ยนเป็นลิงก์ /exec ล่าสุดที่เพิ่งสร้างใหม่
+const URL = "https://script.google.com/macros/s/AKfycbzniZjhKRPuoaMvxY8lqE26A9WWuvMDn_JH-xrLfIj7A07coPJtA8XhWpfZL09C5KxrzA/exec";
 
 document.getElementById("btnSend").addEventListener("click", async () => {
     const nameInput = document.getElementById("fullName");
@@ -157,84 +56,52 @@ document.getElementById("btnSend").addEventListener("click", async () => {
     const btn = document.getElementById("btnSend");
     const msg = document.getElementById("msg");
 
-    // เช็คการกรอกข้อมูล
-    if (!name) {
-        msg.textContent = "⚠️ กรุณากรอกชื่อ-นามสกุล";
-        msg.style.color = "#b45309";
-        setTimeout(() => msg.textContent = "", 2500);
-        nameInput.focus();
-        return;
-    }
+    if(!name){ msg.textContent="⚠️ กรุณากรอกชื่อ"; msg.style.color="#b45309"; setTimeout(()=>msg.textContent="",2500); return; }
 
-    // แสดงสถานะกำลังทำงาน
-    btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
-    btn.disabled = true;
-    msg.textContent = "";
+    btn.innerHTML='<i class="fa fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
+    btn.disabled=true; msg.textContent="";
 
-    try {
-        const fd = new FormData();
-        fd.append("name", name);
-        const res = await fetch(URL, { method: "POST", body: fd, redirect: "follow" });
+    try{
+        const fd = new FormData(); fd.append("name", name);
+        const res = await fetch(URL, {method:"POST", body:fd, redirect:"follow"});
         const txt = await res.text();
-
-        // เช็คผลลัพธ์ดิบ (ดูเพิ่มเติมที่ Console F12)
-        console.log("📌 ผลลัพธ์ดิบ:", txt);
+        console.log("ข้อมูลที่ได้:", txt); // เช็คค่าจริง
 
         let data;
-        try {
-            data = JSON.parse(txt);
-            console.log("📌 แปลง JSON สำเร็จ:", data);
-        } catch {
-            throw new Error("ระบบไม่ส่งข้อมูล JSON กลับมา");
+        try { data = JSON.parse(txt); } 
+        catch { throw new Error("ไม่ใช่ข้อมูล JSON / ยังใช้โค้ดเก่า"); }
+
+        // ✅ รองรับทั้งรูปแบบใหม่และเก่า
+        let isSuccess = false;
+        let orderNum = null;
+
+        if (data.success === true && typeof data.order === "number") {
+            isSuccess = true;
+            orderNum = data.order;
+        } else if (data.status === "ok" && typeof data.order === "number") {
+            isSuccess = true;
+            orderNum = data.order;
         }
 
-        // ✅ รองรับทุกรูปแบบที่เป็นไปได้
-        let ok = false, num = null;
-        // รูปแบบมาตรฐานที่เราสั่งให้ส่งกลับ
-        if (data.success === true && typeof data.order !== "undefined") {
-            ok = true;
-            num = Number(data.order);
-        }
-        // รูปแบบเก่าเผื่อเหลือเผื่อขวาง
-        else if (data.status === "ok" && typeof data.order !== "undefined") {
-            ok = true;
-            num = Number(data.order);
-        }
-        // ถ้ามีเลขลำดับแน่ๆ ไม่ว่าจะอยู่รูปแบบไหน
-        else if (data.order && !isNaN(Number(data.order))) {
-            ok = true;
-            num = Number(data.order);
-        }
-
-        if (ok) {
-            msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${num}`;
+        if (isSuccess) {
+            msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${orderNum}`;
             msg.style.color = "#166534";
-            nameInput.value = "";
-            setTimeout(() => msg.textContent = "", 4000);
+            nameInput.value = ""; // ✅ ล้างชื่อแน่นอน
+            setTimeout(()=>msg.textContent="",4000);
         } else {
-            msg.textContent = "❌ ไม่สำเร็จ: " + (data.error || "รูปแบบข้อมูลไม่ตรงกัน");
+            msg.textContent = "❌ ไม่สำเร็จ: " + (data.error || "รูปแบบข้อมูลไม่ถูกต้อง");
             msg.style.color = "#dc2626";
-            setTimeout(() => msg.textContent = "", 3000);
+            setTimeout(()=>msg.textContent="",3000);
         }
-
-    } catch (e) {
-        console.error("❌ ข้อผิดพลาด:", e);
-        msg.textContent = "❌ ไม่สำเร็จ: " + e.message;
-        msg.style.color = "#dc2626";
-        setTimeout(() => msg.textContent = "", 3000);
+    }catch(e){
+        msg.textContent="❌ ไม่สำเร็จ: " + e.message;
+        msg.style.color="#dc2626";
+        setTimeout(()=>msg.textContent="",3000);
     }
 
-    // คืนค่าปุ่ม
-    setTimeout(() => {
-        btn.innerHTML = '<i class="fa fa-file-text-o mr-2"></i> ลงนามถวายพระพร';
-        btn.disabled = false;
-    }, 1500);
+    setTimeout(()=>{ btn.innerHTML='<i class="fa fa-file-text-o mr-2"></i> ลงนามถวายพระพร'; btn.disabled=false; },1500);
 });
-
-// กด Enter ส่งข้อมูล
-document.getElementById("fullName").addEventListener("keydown", e => {
-    if (e.key === "Enter") document.getElementById("btnSend").click();
-});
+document.getElementById("fullName").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("btnSend").click()});
 </script>
 </body>
 </html>
