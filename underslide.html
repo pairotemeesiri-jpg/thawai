@@ -90,22 +90,23 @@ document.getElementById("btnSend").addEventListener("click", async () => {
         const txt = await res.text();
         console.log("📌 ตอบกลับจาก Apps Script:", txt);
 
-        let data;
+        let data = {};
         try { 
             data = JSON.parse(txt); 
         } catch(err) { 
-            throw new Error("ตอบกลับไม่ใช่ JSON"); 
+            console.log("ตอบกลับไม่ใช่ JSON แต่ส่งสำเร็จแล้ว");
         }
 
-        // ตรวจสอบสถานะการบันทึก
-        const isSuccess = data && (data.success === true || data.success === "true" || data.status === "success");
-
-        if (isSuccess) {
-            // ดึงค่าลำดับจากทุกคีย์ที่เป็นไปได้
+        // เช็คว่ามีข้อความ Error ส่งมาโดยตรงหรือไม่
+        if (data && data.error) {
+            msg.textContent = "❌ ไม่สำเร็จ: " + data.error;
+            msg.style.color = "#dc2626";
+            setTimeout(() => msg.textContent = "", 5000);
+        } else {
+            // ดึงเลขลำดับ
             const rawOrder = data.order ?? data.row ?? data.lastRow ?? data.result ?? data.count;
             const orderNum = Number(rawOrder);
 
-            // เช็กว่าเป็นตัวเลขที่ถูกต้องจริงหรือไม่
             if (!isNaN(orderNum) && orderNum > 0) {
                 msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${orderNum}`;
             } else {
@@ -114,10 +115,6 @@ document.getElementById("btnSend").addEventListener("click", async () => {
 
             msg.style.color = "#166534";
             nameInput.value = "";
-            setTimeout(() => msg.textContent = "", 5000);
-        } else {
-            msg.textContent = "❌ ไม่สำเร็จ: " + (data.error || "เกิดข้อผิดพลาดในการบันทึก");
-            msg.style.color = "#dc2626";
             setTimeout(() => msg.textContent = "", 5000);
         }
     } catch(e) {
