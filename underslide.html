@@ -59,7 +59,7 @@
 </div>
 
 <script>
-// 📌 Web App URL
+// 📌 วางลิงก์ Web App ของคุณตรงนี้
 const URL = "https://script.google.com/macros/s/AKfycbyGJDW5lJxVRQV4uR0x5nG8JbGwLEAcx0rWtEnEajqkZj5AmmcOMzst1AilX6BvFwZKjQ/exec";
 
 document.getElementById("btnSend").addEventListener("click", async () => {
@@ -89,24 +89,23 @@ document.getElementById("btnSend").addEventListener("click", async () => {
         });
         
         const txt = await res.text();
-        console.log("📌 ตอบกลับจาก Apps Script:", txt);
-
+        console.log("ตอบกลับจากระบบ:", txt);
         const data = JSON.parse(txt);
 
         if (data && data.success === true) {
-            // ✅ แสดงลำดับที่และจำนวนรวมทั้งหมด
+            // แสดงผลลำดับและจำนวนรวม
             msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${data.order} (รวมทั้งหมด ${data.total} คน)`;
             msg.style.color = "#166534";
             nameInput.value = "";
             setTimeout(() => msg.textContent = "", 5000);
         } else {
-            // ❌ ไม่แสดงสาเหตุข้อผิดพลาด
+            // ไม่แสดงสาเหตุข้อผิดพลาด
             msg.textContent = "❌ ไม่สามารถบันทึกได้";
             msg.style.color = "#dc2626";
             setTimeout(() => msg.textContent = "", 5000);
         }
     } catch(e) {
-        console.error("❌ ข้อผิดพลาด:", e);
+        console.error("ข้อผิดพลาด:", e);
         msg.textContent = "❌ ไม่สามารถบันทึกได้";
         msg.style.color = "#dc2626";
         setTimeout(() => msg.textContent = "", 5000);
