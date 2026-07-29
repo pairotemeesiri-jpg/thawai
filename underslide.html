@@ -58,7 +58,7 @@
 </div>
 
 <script>
-// 📌 นำ URL จาก Apps Script Web App ที่ได้จากการ Deploy มาวางตรงนี้
+// 📌 Web App URL
 const URL = "https://script.google.com/macros/s/AKfycbzwCCA4C1Jy0s9Czo4LOtayxDtFZWL63UadytYiCmolVEKEUbu7SM4ENC3y-axTlGM8uQ/exec";
 
 document.getElementById("btnSend").addEventListener("click", async () => {
@@ -67,7 +67,7 @@ document.getElementById("btnSend").addEventListener("click", async () => {
     const btn = document.getElementById("btnSend");
     const msg = document.getElementById("msg");
 
-    // ตรวจสอบว่ากรอกชื่อหรือไม่
+    // ตรวจสอบว่าได้กรอกชื่อหรือไม่
     if(!name){ 
         msg.textContent = "⚠️ กรุณากรอกชื่อ-นามสกุล"; 
         msg.style.color = "#b45309"; 
@@ -76,7 +76,7 @@ document.getElementById("btnSend").addEventListener("click", async () => {
         return; 
     }
 
-    // แสดงสถานะกำลังบันทึก
+    // ล็อกปุ่มกดและแสดงสถานะกำลังบันทึก
     btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
     btn.disabled = true; 
     msg.textContent = "";
@@ -90,49 +90,39 @@ document.getElementById("btnSend").addEventListener("click", async () => {
         });
         
         const txt = await res.text();
-        console.log("📌 ผลลัพธ์ดิบจาก Server:", txt);
+        console.log("📌 ตอบกลับจาก Apps Script:", txt);
 
         let data;
         try { 
             data = JSON.parse(txt); 
         } catch(err) { 
-            console.error("ตอบกลับที่ไม่ใช่ JSON:", txt);
-            throw new Error("ระบบตอบกลับผิดพลาด (โปรดเช็คการ Deploy ให้เป็น Anyone)"); 
+            throw new Error("ระบบส่งข้อมูลกลับผิดพลาด (โปรดเช็คการ Deploy ให้สิทธิ์เป็น Anyone)"); 
         }
 
-        // ตรวจสอบสถานะความสำเร็จและหาลำดับ
-        let ok = false, num = null;
-        if (data && (data.success === true || data.success === "true")) {
-            const rawOrder = data.order ?? data.row ?? data.lastRow;
-            if (rawOrder !== undefined && rawOrder !== null) {
-                num = Number(rawOrder);
-                if (!isNaN(num)) ok = true;
-            }
-        }
-
-        if (ok) {
-            msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${num}`;
+        // เช็คความสำเร็จและการดึงลำดับ
+        if (data && data.success === true) {
+            msg.textContent = `✅ สำเร็จ! คุณเป็นคนที่ ${data.order}`;
             msg.style.color = "#166534";
             nameInput.value = "";
             setTimeout(() => msg.textContent = "", 5000);
         } else {
-            msg.textContent = "❌ ไม่สำเร็จ: " + (data.error || "ไม่สามารถดึงลำดับได้");
+            msg.textContent = "❌ ไม่สำเร็จ: " + (data.error || "เกิดข้อผิดพลาดในการบันทึก");
             msg.style.color = "#dc2626";
-            setTimeout(() => msg.textContent = "", 4000);
+            setTimeout(() => msg.textContent = "", 5000);
         }
     } catch(e) {
         console.error("❌ ข้อผิดพลาด:", e);
         msg.textContent = "❌ ไม่สำเร็จ: " + e.message;
         msg.style.color = "#dc2626";
-        setTimeout(() => msg.textContent = "", 4000);
+        setTimeout(() => msg.textContent = "", 5000);
     } finally {
-        // คืนค่าปุ่มกดให้เป็นปกติ
+        // คืนค่าปุ่มกดให้พร้อมใช้งานอีกครั้ง
         btn.innerHTML = '<i class="fa fa-file-text-o mr-2"></i> ลงนามถวายพระพร'; 
         btn.disabled = false;
     }
 });
 
-// รองรับการกดปุ่ม Enter ในช่องกรอกชื่อ
+// รองรับการกดปุ่ม Enter
 document.getElementById("fullName").addEventListener("keydown", e => {
     if (e.key === "Enter") document.getElementById("btnSend").click();
 });
